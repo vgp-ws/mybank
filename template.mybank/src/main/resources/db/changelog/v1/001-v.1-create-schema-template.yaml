@@ -8,14 +8,13 @@ databaseChangeLog:
       description: Инициализация БД.
       labels: Initial DB
       context: Template_MyBank_v.1
-      comment: Создание таблицы из шаблона.
+      comment: Создание схемы из шаблона.
       tagDatabase:
-        tag: create_table_template
+        tag: create_scheme_template
       changes:
         - sql:
-            endDelimiter:  \nGO
-            splitStatements:  true
-            sql:
-                CREATE SCHEMA IF NOT EXISTS templatescheme AUTHORIZATION mybank_user;
-                GRANT ALL ON SCHEMA templatescheme TO mybank_user;
-          stripComments:  true
+            sql: |
+              CREATE SCHEMA IF NOT EXISTS templatescheme AUTHORIZATION mybank_user;
+              GRANT ALL ON SCHEMA templatescheme TO mybank_user;
+            splitStatements: true
+            stripComments: true
