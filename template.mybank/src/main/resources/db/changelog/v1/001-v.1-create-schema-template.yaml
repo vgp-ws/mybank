@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - preConditions:
+      - onFail: HALT
+      - onError: HALT
+  - changeSet:
+      id: "Init_DB_Template_Table"
+      author: Vladimir P.
+      description: Инициализация БД.
+      labels: Initial DB
+      context: Template_MyBank_v.1
+      comment: Создание таблицы из шаблона.
+      tagDatabase:
+        tag: create_table_template
+      changes:
+        - sql:
+            endDelimiter:  \nGO
+            splitStatements:  true
+            sql:
+                CREATE SCHEMA IF NOT EXISTS templatescheme AUTHORIZATION mybank_user;
+                GRANT ALL ON SCHEMA templatescheme TO mybank_user;
+          stripComments:  true

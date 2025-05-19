@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - preConditions:
+      - onFail: HALT
+      - onError: HALT
+  - changeSet:
+      id: "Init_DB_Template_Table"
+      author: Vladimir P.
+      description: Инициализация БД.
+      labels: Initial DB
+      context: Template_MyBank_v.1
+      comment: Создание таблицы из шаблона.
+      tagDatabase:
+        tag: create_table_template
+      changes:
+        - preConditions:
+            - not:
+                - tableExists:
+                    schemaName: templatescheme
+                    tableName: template
+        - createTable:
+            schemaName: templatescheme
+            tableName: template
+            columns:
+              - column:
+                  name: template_id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+      rollback:
+        - dropTable:
+            schemaName: templatescheme
+            tableName: template

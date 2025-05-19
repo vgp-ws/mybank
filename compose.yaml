@@ -1,0 +1,137 @@
+services:
+  myshop:
+    build:
+     context: .
+     dockerfile: Dockerfile.myshop
+     args:
+        - FOLDER_IMAGES=${FILE_STORE_IMAGE}
+    depends_on:
+      psql-shop:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy  
+      redis:
+        condition: service_started  
+
+    image: myshop:latest
+    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n myshop.jar
+    
+    environment:
+      - DATASOURCE_URL_LIQUIBASE=${DATASOURCE_URL_LIQUIBASE}
+      - DATASOURCE_URL=${DATASOURCE_URL}
+      - DATASOURCE_USER=${DATASOURCE_USER}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+      - API_ACQUIRE_URI=${API_ACQUIRE_URI}
+      - REDIS_HOST=${REDIS_HOST}
+      - FILE_STORE_IMAGE=${FILE_STORE_IMAGE}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    ports:
+      - "80:8080"
+      - "8088:8088"
+
+  acquire.myshop:
+    build:
+     context: .
+     dockerfile: Dockerfile.acquire.myshop
+    depends_on:
+      psql-shop:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy  
+        
+    image: acquire.myshop:latest
+    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8089,server=y,suspend=n acquire.myshop.jar
+
+    environment:
+      - DATASOURCE_URL_LIQUIBASE=${DATASOURCE_URL_LIQUIBASE}
+      - DATASOURCE_URL=${DATASOURCE_URL}
+      - DATASOURCE_USER=${DATASOURCE_USER}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+    ports:
+      - "81:8081"
+      - "8089:8089"
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:9000/health/live']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    depends_on:
+      psql-keycloak:
+        condition: service_healthy
+    environment:
+      - KC_HTTP_PORT=8082
+      - KC_DB=postgres
+      - KC_DB_URL=${KEYCLOAK_DB_URL} 
+      - KC_HEALTH_ENABLED=true
+      - KC_DB_USERNAME=${KEYCLOAK_DB_USERNAME} 
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD} 
+    ports:
+      - 82:8082
+      - 9000:9000
+    volumes:
+      - ./master-realm.json:/opt/keycloak/data/import/master-realm.json
+    command: start-dev --import-realm
+
+  psql-shop:
+    build:
+      context: .
+      dockerfile: Dockerfile.psql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATASOURCE_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5      
+    environment:
+      - POSTGRES_USER=${DATASOURCE_USER}
+      - POSTGRES_PASSWORD=${DATASOURCE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Подключаем volume к директории данных PostgreSQL
+
+  psql-keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak.psql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5      
+    environment:
+      - POSTGRES_USER=${KEYCLOAK_DB_USERNAME}
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_keycloak:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    external: false 
+  postgres_data_keycloak:
+    external: false
+  redis_data:
+    external: false
+
+networks:
+  psql:
+    driver: bridge
+  myshop:
+    driver: bridge
+  acquire.myshop:
+    driver: bridge
+  redis:
+    driver: bridge
+  keycloak:
+    driver: bridge
