@@ -22,6 +22,14 @@ spring:
         init:
             mode: never
 
+    cloud:
+        consul:
+            enabled: false
+            config:
+                enabled: false
+            discovery:
+                enabled: false
+
     # security:
     #   oauth2:
     #     client:

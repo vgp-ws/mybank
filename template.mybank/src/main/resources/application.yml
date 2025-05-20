@@ -15,6 +15,19 @@ spring:
         default-schema: templatescheme
         liquibase-schema: public
 
+    cloud:
+        consul:
+            host: consul
+            port: 8500
+            discovery:
+                enabled: true
+                service-name: template
+                instance-id: ${spring.application.name}:${random.value}
+                health-check-path: /actuator/health
+                health-check-interval: 15s
+                heartbeat:
+                    enabled: true
+
     jpa:
         show-sql: false    
         hibernate:
