@@ -11,7 +11,7 @@ services:
       consul:
         condition: service_healthy  
 
-    image: tepmlate:latest
+#    image: template:latest
     command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n template.mybank.jar
     
     environment:
