@@ -12,7 +12,7 @@ spring:
         password: ${DATASOURCE_PASSWORD}
         driver-class-name: org.postgresql.Driver
     liquibase:
-        default-schema: template
+        default-schema: templatescheme
         liquibase-schema: public
 
     jpa:

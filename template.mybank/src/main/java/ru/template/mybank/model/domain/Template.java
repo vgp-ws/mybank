@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "templatescheme.template")
+@Table(name = "template")
 public class Template {
     @Id
     @Column(name = "template_id", nullable = false)
