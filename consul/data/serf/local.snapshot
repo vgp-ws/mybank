@@ -1,0 +1,9 @@
+alive: 5a677526efeb 172.21.0.3:8301
+leave
+clock: 1
+alive: 27b2ae32d86f 172.21.0.4:8301
+event-clock: 1
+alive: e792054c1a18 172.21.0.4:8301
+event-clock: 2
+alive: ac1ea79cc88c 172.21.0.4:8301
+event-clock: 3
