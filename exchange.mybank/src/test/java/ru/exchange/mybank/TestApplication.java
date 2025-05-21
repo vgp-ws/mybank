@@ -1,6 +1,8 @@
-package ru.template.mybank;
+package ru.exchange.mybank;
 
 import org.springframework.boot.SpringApplication;
+
+import ru.exchange.mybank.Application;
 
 public class TestApplication {
 

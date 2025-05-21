@@ -1,4 +1,4 @@
-package ru.template.mybank.security;
+package ru.exchange.mybank.security;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

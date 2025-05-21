@@ -1,4 +1,4 @@
-package ru.template.mybank;
+package ru.exchange.mybank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

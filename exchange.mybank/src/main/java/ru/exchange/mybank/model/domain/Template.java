@@ -1,4 +1,4 @@
-package ru.template.mybank.model.domain;
+package ru.exchange.mybank.model.domain;
 
 
 
