@@ -45,3 +45,19 @@ alive: 5ea587c268da 172.18.0.4:8301
 event-clock: 18
 alive: 64001ebae936 172.18.0.4:8301
 event-clock: 19
+alive: ce9dd8a1f4e2 172.21.0.4:8301
+event-clock: 1
+alive: 4397d3289c18 172.21.0.3:8301
+event-clock: 2
+alive: b168f9399ae2 172.21.0.3:8301
+event-clock: 3
+alive: b32b60b1b5f0 172.21.0.3:8301
+event-clock: 4
+alive: 3cd80d53dcba 172.21.0.3:8301
+event-clock: 5
+alive: d167b40518ec 172.21.0.3:8301
+event-clock: 6
+alive: a9d913d47c00 172.21.0.3:8301
+event-clock: 7
+alive: 16d90a6f6a7c 172.21.0.3:8301
+event-clock: 8
