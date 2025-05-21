@@ -1,0 +1,88 @@
+services:
+  exchange.generator:
+    build:
+     context: .
+     dockerfile: Dockerfile
+    depends_on:
+      keycloak:
+        condition: service_healthy  
+      consul:
+        condition: service_healthy  
+
+    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8089,server=y,suspend=n exchange.generator.mybank.jar
+    
+    environment:
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    ports:
+      - "8082:8080"
+      - "8089:8089"
+    networks:
+      - nest
+      
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:9000/health/live']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    depends_on:
+      psql-keycloak:
+        condition: service_healthy
+    environment:
+      - KC_HTTP_PORT=8100
+      - KC_DB=postgres
+      - KC_DB_URL=${KEYCLOAK_DB_URL} 
+      - KC_HEALTH_ENABLED=true
+      - KC_DB_USERNAME=${KEYCLOAK_DB_USERNAME} 
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD} 
+    ports:
+      - 8100:8100
+      - 9000:9000
+    volumes:
+      - ../master-realm.json:/opt/keycloak/data/import/master-realm.json
+    command: start-dev --import-realm
+    networks:
+      - nest
+
+  psql-keycloak:
+    build:
+      context: ../
+      dockerfile: Dockerfile.keycloak.psql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5      
+    environment:
+      - POSTGRES_USER=${KEYCLOAK_DB_USERNAME}
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_keycloak:/var/lib/postgresql/data
+    networks:
+      - nest
+
+  consul:
+    image: consul:1.15.4
+    ports:
+      - "8500:8500"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://consul:8500/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["consul", "agent", "-server", "-ui", "-bind", "0.0.0.0", "-client", "0.0.0.0", "-data-dir", "/consul/data", "-config-dir", "/consul/config"]
+    volumes:
+      - ../consul/data:/consul/data
+      - ../consul/config:/consul/config  
+    networks:
+      - nest
+
+volumes:
+  postgres_data_keycloak:
+    external: false
+
+networks:
+  nest:

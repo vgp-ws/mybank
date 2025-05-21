@@ -33,6 +33,7 @@
 
 	<modules>
 		<module>template.mybank</module>
+		<module>exchange.generator.mybank</module>
 		<module>exchange.mybank</module>
 	</modules>
 	<dependencyManagement>
