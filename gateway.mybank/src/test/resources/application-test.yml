@@ -1,0 +1,47 @@
+server:
+    port: 8081
+    servlet:
+        context-path: /template.mybank
+spring:
+    application:
+        name: template
+
+    jpa:
+        show-sql: true    
+        properties:
+            hibernate:
+                stat: DEBUG
+                '[format_sql]': true
+                '[generate_statistics]': true
+
+    liquibase:
+        default-schema: templatescheme
+        liquibase-schema: public
+
+    sql:
+        init:
+            mode: never
+
+    cloud:
+        consul:
+            enabled: false
+            config:
+                enabled: false
+            discovery:
+                enabled: false
+
+    # security:
+    #   oauth2:
+    #     client:
+    #       provider:
+    #         keycloak:
+    #           issuer-uri: http://mock-keycloak:8080/realms/master
+    #       registration:
+    #         mybank:
+    #           provider: keycloak
+    #           client-id: test-client
+    #           client-secret: test-secret
+
+logging:
+    level:
+        org.hibernate.orm.jdbc.bind: TRACE

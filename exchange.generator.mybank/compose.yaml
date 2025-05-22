@@ -3,6 +3,12 @@ services:
     build:
      context: .
      dockerfile: Dockerfile
+    healthcheck:
+       test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/exchange/generator/actuator/health']
+       interval: 10s
+       timeout: 5s
+       retries: 5
+
     depends_on:
       exchange:
         condition: service_healthy  
@@ -43,6 +49,35 @@ services:
       ports:
         - "8081:8080"
         - "8088:8088"
+      networks:
+        - nest      
+
+  gateway:
+      build:
+        context: ../gateway.mybank/
+        dockerfile: Dockerfile
+      healthcheck:
+          test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/gateway/actuator/health']
+          interval: 10s
+          timeout: 5s
+          retries: 5
+      depends_on:
+        exchange:
+          condition: service_healthy  
+        exchange.generator:
+          condition: service_healthy  
+        keycloak:
+          condition: service_healthy  
+        consul:
+          condition: service_healthy  
+
+      command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8090,server=y,suspend=n gateway.mybank.jar
+      
+      environment:
+        - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      ports:
+        - "8080:8080"
+        - "8090:8090"
       networks:
         - nest      
 
