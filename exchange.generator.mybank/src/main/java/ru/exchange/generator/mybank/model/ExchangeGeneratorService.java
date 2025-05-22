@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExchangeGeneratorService {
 
-    private final RestClient restClient;
+    private final RestClient.Builder restClient;
     private final DiscoveryClient discoveryClient;
 
     Map<String, Float> exchangeGeneratorRates;
@@ -33,16 +33,18 @@ public class ExchangeGeneratorService {
         exchangeGeneratorRates.put("CNY", getRandomValue(10.99f, 14.99f));
 
         // List<ServiceInstance> instances = discoveryClient.getInstances("exchange");
-        //         if (instances.isEmpty()) {
-        //             throw new IllegalStateException("No instances of 'exchange' service available");
-        //         }
+        // if (instances.isEmpty()) {
+        // throw new IllegalStateException("No instances of 'exchange' service
+        // available");
+        // }
 
         // ServiceInstance instance = instances.get(0);
 
         // String urlExchange = instance.getUri() + "/exchange/";
 
-        restClient.post()
-                .uri("http://exchange:8080/exchange/")
+        restClient.build()
+                .post()
+                .uri("http://exchange/exchange/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(exchangeGeneratorRates)
                 .retrieve()
