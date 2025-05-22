@@ -19,7 +19,7 @@ class ExchangeGeneratorServiceTest {
     @Test
     void testGetExchangeGeneratorRates_shouldDifferentValue() {
 
-        Map<String, Float> firstData = exchangeService.getExchangeRates();
+        Map<String, Float> firstData = exchangeService.getExchangeGeneratorRates();
 
         try {
             Thread.sleep(1500);
@@ -27,7 +27,7 @@ class ExchangeGeneratorServiceTest {
             e.printStackTrace();
         }
 
-        Map<String, Float> secondData = exchangeService.getExchangeRates();
+        Map<String, Float> secondData = exchangeService.getExchangeGeneratorRates();
         
         assertThat(firstData.get("USD")).isNotEqualTo(secondData.get("USD"));
     }

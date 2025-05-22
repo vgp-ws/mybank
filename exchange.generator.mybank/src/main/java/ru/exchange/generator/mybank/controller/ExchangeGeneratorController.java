@@ -17,8 +17,8 @@ public class ExchangeGeneratorController {
     private final ExchangeGeneratorService exchangeService;
 
     @PostMapping
-    public Map<String, Float> exchange() {
+    public Map<String, Float> exchangeGenerator() {
 
-        return exchangeService.getExchangeRates();
+        return exchangeService.getExchangeGeneratorRates();
     }
 }

@@ -15,16 +15,14 @@ import lombok.Getter;
 @Getter
 public class ExchangeGeneratorService {
 
-    Map<String, Float> exchangeRates;
+    Map<String, Float> exchangeGeneratorRates;
 
     @Scheduled(fixedRate = 1000)
-    private Map<String, Float> generateExchange() {
+    private void generateExchangeGenerator() {
        
-        exchangeRates = new HashMap<>();
-        exchangeRates.put("USD", getRandomValue(29.99f, 33.99f));
-        exchangeRates.put("CNY", getRandomValue(10.99f, 14.99f));
-
-        return exchangeRates;
+        exchangeGeneratorRates = new HashMap<>();
+        exchangeGeneratorRates.put("USD", getRandomValue(29.99f, 33.99f));
+        exchangeGeneratorRates.put("CNY", getRandomValue(10.99f, 14.99f));
     }
 
     private float getRandomValue(float min, float max) {
