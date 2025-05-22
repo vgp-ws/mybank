@@ -13,7 +13,7 @@ import lombok.Getter;
 @Service
 @EnableScheduling
 @Getter
-public class ExchangeService {
+public class ExchangeGeneratorService {
 
     Map<String, Float> exchangeRates;
 

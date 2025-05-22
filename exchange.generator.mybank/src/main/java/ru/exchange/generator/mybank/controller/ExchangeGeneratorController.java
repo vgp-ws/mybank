@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import ru.exchange.generator.mybank.model.ExchangeService;
+import ru.exchange.generator.mybank.model.ExchangeGeneratorService;
 
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class ExchangeController {
+public class ExchangeGeneratorController {
 
-    private final ExchangeService exchangeService;
+    private final ExchangeGeneratorService exchangeService;
 
     @PostMapping
     public Map<String, Float> exchange() {

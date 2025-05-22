@@ -9,17 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import ru.exchange.generator.mybank.model.ExchangeService;
-
 @SpringBootTest
 @ActiveProfiles("test")
-class ExchangeServiceTest {
+class ExchangeGeneratorServiceTest {
 
     @Autowired
-    private ExchangeService exchangeService;
+    private ExchangeGeneratorService exchangeService;
 
     @Test
-    void testGetExchangeRates_shouldDifferentValue() {
+    void testGetExchangeGeneratorRates_shouldDifferentValue() {
 
         Map<String, Float> firstData = exchangeService.getExchangeRates();
 
