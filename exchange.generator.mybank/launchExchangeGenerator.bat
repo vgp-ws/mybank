@@ -1,7 +1,9 @@
 docker compose down -v
 rem docker compose down
 
-docker rmi exchangegeneratormybank-exchange:latest -f
+docker rmi exchangemybank-exchange:latest -f
+docker rmi exchangemybank-psql-keycloak:latest -f
+docker rmi exchangegeneratormybank-exchange.generator:latest -f
 docker rmi exchangegeneratormybank-psql-keycloak:latest -f
 
 cd ..
