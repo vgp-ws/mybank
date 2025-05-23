@@ -175,3 +175,9 @@ alive: 67b743a0ef08 172.18.0.3:8301
 event-clock: 14
 alive: 6311282e14e2 172.18.0.3:8301
 event-clock: 15
+alive: 78b1755822b2 172.21.0.3:8301
+event-clock: 1
+alive: 69e8a66106e8 172.21.0.3:8301
+event-clock: 2
+alive: ad776f4637e2 172.21.0.2:8301
+event-clock: 3
