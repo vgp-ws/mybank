@@ -1,17 +1,39 @@
 services:
 
+  front:
+    build:
+     context: ./front.mybank/
+     dockerfile: Dockerfile
+    healthcheck:
+        test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/front/actuator/health']
+        interval: 10s
+        timeout: 5s
+        retries: 20     
+    depends_on:
+      gateway:
+        condition: service_healthy  
+    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n front.mybank.jar
+    environment:
+      - DATASOURCE_URL=${DATASOURCE_URL}
+      - DATASOURCE_USER=${DATASOURCE_USER}
+      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    ports:
+      - "8080:8080"
+      - "8090:8088"
+    networks:
+      - nest
+
   gateway:
       build:
         context: ./gateway.mybank/
         dockerfile: Dockerfile
       healthcheck:
-          test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/gateway/actuator/health']
+          test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/actuator/health']
           interval: 10s
           timeout: 5s
           retries: 20
       depends_on:
-        front:
-          condition: service_healthy  
         exchange:
           condition: service_healthy  
         exchange.generator:
@@ -26,42 +48,10 @@ services:
       environment:
         - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
       ports:
-        - "8080:8080"
-        - "8090:8088"
+        - "8081:8080"
+        - "8091:8088"
       networks:
         - nest      
-
-  front:
-    build:
-     context: ./front.mybank/
-     dockerfile: Dockerfile
-    healthcheck:
-        test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/front/actuator/health']
-        interval: 10s
-        timeout: 5s
-        retries: 20     
-    depends_on:
-      psql-bank:
-        condition: service_healthy
-      exchange:
-        condition: service_healthy  
-      exchange.generator:
-        condition: service_healthy  
-      keycloak:
-        condition: service_healthy  
-      consul:
-        condition: service_healthy  
-    command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n front.mybank.jar
-    environment:
-      - DATASOURCE_URL=${DATASOURCE_URL}
-      - DATASOURCE_USER=${DATASOURCE_USER}
-      - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
-      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
-    ports:
-      - "8081:8080"
-      - "8088:8088"
-    networks:
-      - nest
 
   template:
     build:
@@ -126,17 +116,10 @@ services:
        interval: 10s
        timeout: 5s
        retries: 20
-
     depends_on:
       exchange:
         condition: service_healthy  
-      keycloak:
-        condition: service_healthy  
-      consul:
-        condition: service_healthy  
-
     command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n exchange.generator.mybank.jar
-    
     environment:
       - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
     ports:
