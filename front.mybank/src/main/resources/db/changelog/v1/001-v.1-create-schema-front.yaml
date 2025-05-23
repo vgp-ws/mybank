@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - preConditions:
+      - onFail: HALT
+      - onError: HALT
+  - changeSet:
+      id: "Init_DB_Front_Table"
+      author: Vladimir P.
+      description: Инициализация БД.
+      labels: Initial DB
+      context: Front_MyBank_v.1
+      comment: Создание схемы из шаблона.
+      tagDatabase:
+        tag: create_scheme_front
+      changes:
+        - sql:
+            sql: |
+              CREATE SCHEMA IF NOT EXISTS frontscheme AUTHORIZATION mybank_user;
+              GRANT ALL ON SCHEMA frontscheme TO mybank_user;
+            splitStatements: true
+            stripComments: true

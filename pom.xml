@@ -36,6 +36,7 @@
 		<module>exchange.generator.mybank</module>
 		<module>exchange.mybank</module>
 		<module>gateway.mybank</module>
+		<module>front.mybank</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
