@@ -1,6 +1,7 @@
 docker compose down -v
 rem docker compose down
 
+docker rmi mybank-accounts:latest -f
 docker rmi mybank-template:latest -f
 docker rmi mybank-front:latest -f
 docker rmi mybank-gateway:latest -f

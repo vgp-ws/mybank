@@ -128,6 +128,34 @@ services:
     networks:
       - nest
 
+  accounts:
+      build:
+        context: ./accounts.mybank/
+        dockerfile: Dockerfile
+      healthcheck:
+          test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/accounts/actuator/health']
+          interval: 10s
+          timeout: 5s
+          retries: 20
+      depends_on:
+        psql-bank:
+          condition: service_healthy
+        keycloak:
+          condition: service_healthy  
+        consul:
+          condition: service_healthy  
+      command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8088,server=y,suspend=n accounts.mybank.jar
+      environment:
+        - DATASOURCE_URL=${DATASOURCE_URL}
+        - DATASOURCE_USER=${DATASOURCE_USER}
+        - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
+        - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      ports:
+        - "8084:8080"
+        - "8094:8088"
+      networks:
+        - nest      
+
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     healthcheck:

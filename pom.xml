@@ -37,6 +37,7 @@
 		<module>exchange.mybank</module>
 		<module>gateway.mybank</module>
 		<module>front.mybank</module>
+		<module>accounts.mybank</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

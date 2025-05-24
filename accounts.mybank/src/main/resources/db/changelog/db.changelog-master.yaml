@@ -1,0 +1,11 @@
+databaseChangeLog:
+    - property:
+            name: schema
+            value: accounts
+    - preConditions:
+          - runningAs:
+                username: mybank_user
+
+    - includeAll:
+          path: v1
+          relativeToChangelogFile: true

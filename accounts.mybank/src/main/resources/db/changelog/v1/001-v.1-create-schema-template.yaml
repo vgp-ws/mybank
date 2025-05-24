@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - preConditions:
+      - onFail: HALT
+      - onError: HALT
+  - changeSet:
+      id: "Init_DB_Accounts_Table"
+      author: Vladimir P.
+      description: Инициализация БД.
+      labels: Initial DB
+      context: Accounts_MyBank_v.1
+      comment: Создание схемы из шаблона.
+      tagDatabase:
+        tag: create_scheme_accounts
+      changes:
+        - sql:
+            sql: |
+              CREATE SCHEMA IF NOT EXISTS accounts AUTHORIZATION mybank_user;
+              GRANT ALL ON SCHEMA accounts TO mybank_user;
+            splitStatements: true
+            stripComments: true
