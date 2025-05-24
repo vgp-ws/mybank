@@ -1,26 +1,26 @@
 package ru.front.mybank.client;
 
-import java.util.Map;
+import java.util.List;
 
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import lombok.RequiredArgsConstructor;
+import ru.front.mybank.model.domain.Rate;
 
 @Component
 @RequiredArgsConstructor
 public class ExchangeClient {
-    
+
     private final RestClient.Builder restClientBuilder;
 
-    public void sendRates(Map<String, Float> rates) {
-        restClientBuilder.build()
+    public List<Rate> getRates() {
+        return restClientBuilder.build()
                 .post()
-                .uri("http://exchange/exchange/get")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(rates)
+                .uri("http://exchange/exchange/getrates")
                 .retrieve()
-                .toBodilessEntity();
+                .body(new ParameterizedTypeReference<List<Rate>>() {
+                });
     }
 }

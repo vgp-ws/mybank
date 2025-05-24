@@ -1,15 +1,10 @@
 package ru.exchange.generator.mybank.client;
 
-import java.util.Map;
+// @Profile("test")
+// //@Component
+// public class ExchangeClient {
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-
-@Primary
-@Component
-public class ExchangeClient {
-
-    public void sendRates(Map<String, Float> rates) {
-        // Empty
-    }
-}
+//     public void sendRates(List<Rate> rates) {
+        
+//     }
+// }

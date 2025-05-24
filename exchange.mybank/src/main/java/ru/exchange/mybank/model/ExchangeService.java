@@ -1,23 +1,23 @@
 package ru.exchange.mybank.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import lombok.Getter;
+import ru.exchange.mybank.model.domain.Rate;
 
 @Service
 @EnableScheduling
 @Getter
 public class ExchangeService {
 
-    Map<String, Float> exchangeRates;
+    private List<Rate> exchangeRates;
 
-    public void setCurrencyRates(Map<String, Float> currencyCodeToRate) {
-              
-      exchangeRates = new HashMap<>(currencyCodeToRate);
+    public void setCurrencyRates(List<Rate> currencyCodeToRate) {
+
+        exchangeRates = new ArrayList<>(currencyCodeToRate);
     }
-
 }
