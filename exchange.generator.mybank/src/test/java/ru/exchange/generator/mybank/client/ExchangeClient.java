@@ -1,10 +1,21 @@
 package ru.exchange.generator.mybank.client;
 
-// @Profile("test")
-// //@Component
-// public class ExchangeClient {
+import java.util.List;
 
-//     public void sendRates(List<Rate> rates) {
-        
-//     }
-// }
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestClient;
+
+import ru.exchange.generator.mybank.model.domain.Rate;
+
+@Primary
+@Profile("test")
+public class ExchangeClient {
+
+    public ExchangeClient(RestClient.Builder restClientBuilder) {
+    }
+
+    public void sendRates(List<Rate> rates) {
+        // Empty
+    }
+}
