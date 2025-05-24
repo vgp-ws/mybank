@@ -11,6 +11,8 @@ public class MainController {
 
     @GetMapping
     public String index(Model model) {
+
+        model.addAttribute("Account", "Моё имя");
         return "main";
     }
 }

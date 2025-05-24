@@ -9,7 +9,7 @@
             var td = document.getElementById('exchange_rates');
             // В fetch ссылка на эндпоинт, который возвращает список курсов валют в JSON-формате:
             // [{"title": "Рубли", "name": "RUB", "value": 100}, {"title": "Доллары", "name": "USD", "value": 200}, ...]
-            fetch('...')
+            fetch('http://localhost/mybank/api/rates')
                 .then(response => response.json())
                 .then(json => {
                     var table = '<table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">';
@@ -88,7 +88,7 @@
             <tr>
                 <td style="font-weight:bold;">Фамилия Имя</td>
                 <!-- В text ошибка фамилия и имя пользователя -->
-                <td th:text="..."/>
+                <td th:text="${Account}"/>
                 <td>
                     <input name="name" type="text" style="width:100%"/>
                 </td>
